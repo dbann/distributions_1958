@@ -14,6 +14,12 @@ merge 1:1 ncdsid using "$data\0, 7, 11, 16y\ncds0123.dta"
 *adult SEP data from age 42y
 drop _merge
 merge 1:1 ncdsid using "$data\42y\ncds6.dta", keepusing(sc breathls exercise)
+
+*sex
+clonevar sex = n622
+mvdecode sex, mv( -1=.) 
+tab sex
+
  
 ***clean and recode relevant exposure and outcme data
 *bmi
@@ -28,9 +34,8 @@ sum bmi45 bweight bheight
 clonevar waist45=waist 
 mvdecode waist45, mv(-3/-1=.  \ 999.9=.) 
 
-tab waist45, nolab
+sum waist45
 *hist waist45
-
 
 **generate logged outcomes
 foreach var of varlist   bmi45 waist45 {
@@ -54,11 +59,11 @@ label var fsc0 "Paternal social class (per 1 category lower), birth"
 
 
 *maternal weight
-tab n496 //note non-intuitive order
+tab n496 //note non-linear order
 mvdecode n496, mv( -1=.) 
 
 cap drop mwt0x 
-clonevar mwt0x = n496  //bizzare coding order can fix later ....
+clonevar mwt0x = n496  
 tab mwt0x
 tab mwt0x, nolab
 recode mwt0x ( 7=1  " Under 7 stone " ) ( 8=2  " 7st below 8st " ) ( 9=3  " 8st below 9st " ) ( 10=4  " 9st below 10st " ) ( 1=5  " 10st below 11st " ) ( 2=6  " 11st below 12st " ) ( 3=7  " 12st below 13st " ) ( 4=8  " 13st below 14st " ) ( 5=9  " 14st below 15st " ) ( 6=10  " 15st and over " ) , gen(mwt0)
@@ -85,6 +90,7 @@ mvdecode n920 , mv( -1=.)
 gen xx = 81 - n920
 corr xx n920
 egen cog11 = std(xx)
+sum cog11 
 *kdensity cog11 //broadly normally distributed
 
 label var cog11 "General cognition (per 1 lower SDS), 11y"
