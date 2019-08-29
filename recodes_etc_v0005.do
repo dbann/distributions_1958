@@ -57,6 +57,11 @@ recode fsc (2=0 "I professional") (3=1 "II") (4=2 "III nm") (5=3 "III m") (6=4 "
 
 label var fsc0 "Paternal social class (per 1 category lower), birth"
 
+*binary version
+recode fsc0 (0/2 = 0 "Non-manual") (3/5 =1 "Manual"), gen(fsc0b)
+tab fsc0 fsc0b 
+label var fsc0b "Paternal social class (manual vs non-manual), birth"
+
 
 *maternal weight
 tab n496 //note non-linear order
@@ -71,7 +76,11 @@ tab mwt0x mwt0
 
 label var mwt0 "Maternal weight (per 1 higher category), birth"
 
-tab mwt0
+*binary version
+recode mwt0 (1/3 = 0 "< 9 stone") (4/10= 1 "9 stone or more"), gen(mwt0b)
+tab mwt0 mwt0b, mi
+label var mwt0b "Maternal weight (9 stone or more vs less), birth"
+
 
 *maternal education at 0y
 desc n537
@@ -94,8 +103,9 @@ sum cog11
 *kdensity cog11 //broadly normally distributed
 
 label var cog11 "General cognition (per 1 lower SDS), 11y"
- 
+
 *exercise at 42y
 desc exercise
 recode exercise  (1=0 "yes does regular exercise") (2=1  "does not") (8=.) (9=.), gen(sports42b)
+label var sports42b "Physical exercise (inactive vs active), 42y"
 tab exercise   sports42b, mi
