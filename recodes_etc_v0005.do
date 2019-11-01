@@ -21,7 +21,7 @@ mvdecode sex, mv( -1=.)
 tab sex
 
  
-***clean and recode relevant exposure and outcme data
+***clean and recode relevant exposure and outcome data
 *bmi
 mvdecode bweight bheight , mv( -3/-1=.) 
 gen bheightm = bheight /100
@@ -33,9 +33,7 @@ sum bmi45 bweight bheight
 *waist circmumference
 clonevar waist45=waist 
 mvdecode waist45, mv(-3/-1=.  \ 999.9=.) 
-
 sum waist45
-*hist waist45
 
 **generate logged outcomes
 foreach var of varlist   bmi45 waist45 {
@@ -62,6 +60,16 @@ recode fsc0 (0/2 = 0 "Non-manual") (3/5 =1 "Manual"), gen(fsc0b)
 tab fsc0 fsc0b 
 label var fsc0b "Paternal social class (manual vs non-manual), birth"
 
+*maternal education at 0y
+desc n537
+tab n537
+clonevar med0 = n537  //"0 Was mum at sch. after min.leaving age" - slightly unclear responses, conservatively coded
+tab med0 
+tab med0 , nolab
+mvdecode med0 , mv( -1=. \ 1=. \ 2=. \ 8=. ) 
+cap drop med0b 
+recode med0 (3/4 =0 "yes (higher education)") (6=0) (5=1 "no (lower ed)"), gen(med0b)
+tab med0 med0b, mi 
 
 *maternal weight
 tab n496 //note non-linear order
@@ -81,17 +89,6 @@ recode mwt0 (1/3 = 0 "< 9 stone") (4/10= 1 "9 stone or more"), gen(mwt0b)
 tab mwt0 mwt0b, mi
 label var mwt0b "Maternal weight (9 stone or more vs less), birth"
 
-
-*maternal education at 0y
-desc n537
-tab n537
-clonevar med0 = n537  //"0 Was mum at sch. after min.leaving age" - slightly unclear responses, conservatively coded
-tab med0 
-tab med0 , nolab
-mvdecode med0 , mv( -1=. \ 1=. \ 2=. \ 8=. ) 
-cap drop med0b 
-recode med0 (3/4 =0 "yes (higher education)") (6=0) (5=1 "no (lower ed)"), gen(med0b)
-tab med0 med0b, mi 
 
 *cognition at 11y - for details of this measure see https://cls.ucl.ac.uk/wp-content/uploads/2017/07/NCDS-user-guide-NCDS1-3-Measures-of-ability-P-Shepherd-December-2012.pdf
 mvdecode n920 , mv( -1=.) 
