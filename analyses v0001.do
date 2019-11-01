@@ -1,7 +1,6 @@
 ///////   analysis do file for Bann et al paper on quantile regression in the 1958 birth cohort (NCDS)
 
-*run cleaning file first
-do "$syntax\recodes_etc_v0005.do" 
+***run cleaning file first
 
 *****Table 1 
 *output ols regression estimates - average difference in outcome [note add "noaster ci level(95)" for CI with no sig signs)
@@ -14,7 +13,6 @@ outreg2 using $output/qreg_table1.doc,   auto(2) nocons  label  nor2
 
 
 *****supplementary tables
-
 *****additionally adjust for height 
 *OLS
 reg bmi45 fsc0b  mwt0b cog11 sports42b bheightm
@@ -56,11 +54,8 @@ by bmi45q, sort: spearman med0b fsc
 by bmi45q, sort: corr fsc  cog11
 by bmi45q, sort: tab fsc0b med0b, chi
 
-sqreg bmi45log cog11 , q(.1 .25 .5 .75 .9 )
-
 
 ****additional analyses (not in paper)
-
 *****log-transformed outcome - waist
 *ols reg estimates 
 reg waist45log fsc0b  mwt0b cog11 sports42b 
